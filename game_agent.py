@@ -37,7 +37,26 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
 
-    # TODO: finish this function!
+    # TODO: write 2 more variants for this function and probably improve this one too.
+    # If won
+    if game.is_winner(player):
+        return float("inf")
+
+    # If lost
+    if game.is_loser(player):
+        return float("-inf")
+
+    player_moves_left = len(game.get_legal_moves(player))
+    opponent_moves_left = len(game.get_legal_moves(game.get_opponent(player)))
+
+    # if player_moves_left != opponent_moves_left:
+    # Simplest Heuristic ever! Ikr! :P
+    return float(player_moves_left - 2*opponent_moves_left)
+    # else:
+
+        
+
+
     raise NotImplementedError
 
 
@@ -169,10 +188,42 @@ class CustomPlayer:
                 to pass the project unit tests; you cannot call any other
                 evaluation function directly.
         """
+
+        def min_play(game_state):
+            # if won
+            if game.is_winner(player):
+                return float("inf")
+
+            # If lost
+            if game.is_loser(player):
+                return float("-inf")
+            # return min of all max values produced by opponent of min
+
+            return(min(map(lambda move: max_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
+
+
+        def max_play(game_state):
+            # if won
+            if game.is_winner(player):
+                return float("inf")
+
+            # If lost
+            if game.is_loser(player):
+                return float("-inf")
+
+            return(max(map(lambda move: min_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
+
+
+        # Minimax for a given game state returns all the valid moves. It then stimulates
+        # all the valid moves on copies of game state and evaluates each game state and 
+        # returns the best move.
+
+
+
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
 
-        # TODO: finish this function!
+
         raise NotImplementedError
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
