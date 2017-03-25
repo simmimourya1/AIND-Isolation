@@ -281,6 +281,47 @@ class CustomPlayer:
         """
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
+            
+        # Get legal moves for active player
+        legal_moves = game.get_legal_moves()
+        
+        # Search depth reaches terminal case
+        if depth == 0:
+            # Score
+            return self.score(game, self), (-1, -1)
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        # If no legal moves are left, game ends
+        if not legal_moves:
+            # -inf or +inf 
+            return game.utility(self), (-1, -1)
+
+
+        best_move = None
+        if maximizing_player:
+            # Maximizing player wants highest score.
+            best_score = float("-inf")
+            for move in legal_moves:
+                next_state = game.forecast_move(move)
+                # Forecast_move switches the active player
+                score, _ = self.alphabeta(next_state, depth - 1, alpha, beta, False)
+                if score > best_score:
+                    best_score, best_move = score, move
+                # Prune
+                if best_score >= beta:
+                    return best_score, best_move
+                # Update alpha
+                alpha = max(alpha, best_score)
+        else:
+            # Minimizing player wants lowest score.
+            best_score = float("inf")
+            for move in legal_moves:
+                next_state = game.forecast_move(move)
+                score, _ = self.alphabeta(next_state, depth - 1, alpha, beta, True)
+                if score < best_score:
+                    best_score, best_move = score, move
+                # Prune
+                if best_score <= alpha:
+                    return best_score, best_move
+                # Update beta
+                beta = min(beta, best_score)
+        return best_score, best_move
