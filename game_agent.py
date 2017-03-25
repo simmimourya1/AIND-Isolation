@@ -188,43 +188,58 @@ class CustomPlayer:
                 to pass the project unit tests; you cannot call any other
                 evaluation function directly.
         """
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise Timeout()
+            
+        # Get legal moves for active player
+        legal_moves = game.get_legal_moves()
+        
+        # Search depth reaches terminal case
+        if depth == 0:
+            # Score
+            return self.score(game, self), (-1, -1)
 
-        def min_play(game_state):
-            # if won
-            if game.is_winner(player):
-                return float("inf")
+        # If no legal moves are left, game ends
+        if not legal_moves:
+            # -inf or +inf 
+            return game.utility(self), (-1, -1)
 
-            # If lost
-            if game.is_loser(player):
-                return float("-inf")
-            # return min of all max values produced by opponent of min
+        best_move = None
 
-            return(min(map(lambda move: max_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
-
-
-        def max_play(game_state):
-            # if won
-            if game.is_winner(player):
-                return float("inf")
-
-            # If lost
-            if game.is_loser(player):
-                return float("-inf")
-
-            return(max(map(lambda move: min_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
+        if maximizing_player:
+            best_score = float("-inf")
+            # check for every legal move.
+            for move in legal_moves:
+                next_state = game.forecast_move(move)
+                score, _ = self.minimax(next_state, depth - 1, False)
+                # Best for maximizing player is highest score
+                if score > best_score:
+                    best_score, best_move = score, move
+        else:
+            best_score = float("inf")
+            for move in legal_moves:
+                next_state = game.forecast_move(move)
+                score, _ = self.minimax(next_state, depth - 1, True)
+                # Best for minimizing player is lowest score
+                if score < best_score:
+                    best_score, best_move = score, move
+        return best_score, best_move
 
 
         # Minimax for a given game state returns all the valid moves. It then stimulates
         # all the valid moves on copies of game state and evaluates each game state and 
         # returns the best move.
 
+        # def min_play(game_state):
+        #     return(min(map(lambda move: max_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
 
 
-        if self.time_left() < self.TIMER_THRESHOLD:
-            raise Timeout()
+        # def max_play(game_state):
+        #     return(max(map(lambda move: min_play(game_state.forecast_move(move).score()), game.get_legal_moves(player))))
+    
+            
+        # return max(map(lambda move: (move, min_play(game_state.forecast_move(move).score())), game.get_legal_moves(player)), key = lambda x: x[1])
 
-
-        raise NotImplementedError
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
         """Implement minimax search with alpha-beta pruning as described in the
