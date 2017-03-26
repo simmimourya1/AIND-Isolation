@@ -14,6 +14,77 @@ class Timeout(Exception):
     pass
 
 
+def simplest_aggresive(game, player):
+    # not submitted
+    # If won
+    if game.is_winner(player):
+        return float("inf")
+
+    # If lost
+    if game.is_loser(player):
+        return float("-inf")
+
+    player_moves_left = len(game.get_legal_moves(player))
+    opponent_moves_left = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return float(player_moves_left - 2*opponent_moves_left)
+
+
+def maximize_winning(game, player):
+
+    # not submitted
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    my_moves = 1.0 * len(game.get_legal_moves(player))
+    opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    if my_moves == 0:
+        return float("-inf")
+
+    if opponent_moves == 0:
+        return float("inf")
+
+    return my_moves/opponent_moves
+
+
+def minimize_losing(game, player):
+    # not submitted 
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    my_moves = len(game.get_legal_moves(player))
+    opponent_moves = 1.0 * len(game.get_legal_moves(game.get_opponent(player)))
+
+    if my_moves == 0:
+        return float("-inf")
+
+    if opponent_moves == 0:
+        return float("inf")
+
+    return -opponent_moves/my_moves
+
+
+def weighted_combination(game, player):
+    # This heuristic is a weighted combination of maximize_winning and minimize_losing heuristics.
+    # submitted 
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    my_moves = len(game.get_legal_moves(player))
+    opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return my_moves*my_moves - 1.5*opponent_moves*opponent_moves
+
 def custom_score(game, player):
     """Calculate the heuristic value of a game state from the point of view
     of the given player.
@@ -36,28 +107,9 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-
-    # TODO: write 2 more variants for this function and probably improve this one too.
-    # If won
-    if game.is_winner(player):
-        return float("inf")
-
-    # If lost
-    if game.is_loser(player):
-        return float("-inf")
-
-    player_moves_left = len(game.get_legal_moves(player))
-    opponent_moves_left = len(game.get_legal_moves(game.get_opponent(player)))
-
-    # if player_moves_left != opponent_moves_left:
-    # Simplest Heuristic ever! Ikr! :P
-    return float(player_moves_left - 2*opponent_moves_left)
-    # else:
-
-        
+    return weighted_combination(game, player)
 
 
-    raise NotImplementedError
 
 
 class CustomPlayer:
