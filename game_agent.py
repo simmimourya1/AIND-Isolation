@@ -14,7 +14,7 @@ class Timeout(Exception):
     pass
 
 
-def simplest_aggresive(game, player):
+def simplest_aggressive(game, player):
     # not submitted
     # If won
     if game.is_winner(player):
