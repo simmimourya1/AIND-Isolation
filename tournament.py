@@ -32,10 +32,10 @@ from sample_players import open_move_score
 from sample_players import improved_score
 from game_agent import CustomPlayer
 from game_agent import custom_score
-from game_agent import simplest_aggressive, maximize_winning, minimize_losing, weighted_combination
+from game_agent import simplest_aggressive, maximize_winning, minimize_losing, weighted_combination, minimize_opponent_hits
 
 
-NUM_MATCHES = 100  # number of matches against each opponent
+NUM_MATCHES = 10  # number of matches against each opponent
 TIME_LIMIT = 150  # number of milliseconds before timeout
 
 TIMEOUT_WARNING = "One or more agents lost a match this round due to " + \
@@ -163,6 +163,7 @@ def main():
     # relative to the performance of the ID_Improved agent to account for
     # faster or slower computers.
     test_agents = [Agent(CustomPlayer(score_fn=improved_score, **CUSTOM_ARGS), "ID_Improved"),
+                   Agent(CustomPlayer(score_fn=minimize_opponent_hits, **CUSTOM_ARGS), "Student0"),
                    Agent(CustomPlayer(score_fn=simplest_aggressive, **CUSTOM_ARGS), "Student1"),
                    Agent(CustomPlayer(score_fn=maximize_winning, **CUSTOM_ARGS), "Student2"),
                    Agent(CustomPlayer(score_fn=minimize_losing, **CUSTOM_ARGS), "Student3"),
