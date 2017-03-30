@@ -13,6 +13,22 @@ class Timeout(Exception):
     """Subclass base exception for code clarity."""
     pass
 
+def minimize_opponent_hits(game, player):
+    center_position = (0,0);
+    left_blank_spaces = len(game.get_blank_spaces())
+    player_moves_left = len(game.get_legal_moves(player))
+    opponent_moves_left = len(game.get_legal_moves(game.get_opponent(player)))
+
+    #maximize those blank spaces which actually aren't contributing for opponent moves.
+    not_my_moves = left_blank_spaces - player_moves_left
+    if opponent_moves_left >= 0.7 *not_my_moves:
+        return float(not_my_moves- 3 * opponent_moves_left)
+    elif opponent_moves_left >= 0.4 *not_my_moves:
+        return float(not_my_moves - 2* opponent_moves_left)
+    else:
+        return float(not_my_moves - opponent_moves_left)
+
+
 
 def simplest_aggressive(game, player):
     # not submitted
