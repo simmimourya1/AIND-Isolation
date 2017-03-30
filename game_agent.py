@@ -21,12 +21,12 @@ def minimize_opponent_hits(game, player):
 
     #maximize those blank spaces which actually aren't contributing for opponent moves.
     not_my_moves = left_blank_spaces - player_moves_left
-    if opponent_moves_left >= 0.7 *not_my_moves:
-        return float(not_my_moves- 3 * opponent_moves_left)
-    elif opponent_moves_left >= 0.4 *not_my_moves:
-        return float(not_my_moves - 2* opponent_moves_left)
+    if opponent_moves_left >= 0.5 *not_my_moves:
+        return float(player_moves_left- 2 * opponent_moves_left)
+    elif opponent_moves_left >= 0.3 *not_my_moves:
+        return float(player_moves_left - 1.2* opponent_moves_left)
     else:
-        return float(not_my_moves - opponent_moves_left)
+        return float(player_moves_left - opponent_moves_left)
 
 
 
