@@ -14,6 +14,7 @@ class Timeout(Exception):
     pass
 
 def minimize_opponent_hits(game, player):
+    #not submitted
     center_position = (0,0);
     left_blank_spaces = len(game.get_blank_spaces())
     player_moves_left = len(game.get_legal_moves(player))
@@ -21,7 +22,7 @@ def minimize_opponent_hits(game, player):
 
     #maximize those blank spaces which actually aren't contributing for opponent moves.
     not_my_moves = left_blank_spaces - player_moves_left
-    # penalize more : temp addition
+    # penalize more
     if opponent_moves_left >= 0.4 *not_my_moves:
         return float(player_moves_left- 3 * opponent_moves_left)
     elif opponent_moves_left >= 0.2 *not_my_moves:
